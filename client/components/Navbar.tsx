@@ -1,10 +1,10 @@
 'use client';
 
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import { deleteCookie } from 'cookies-next';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { logout } from '../UserRequest/userLogout';
 import { validateUser } from '../UserRequest/userValidation';
 import Loader from './Loader';
 
@@ -25,22 +25,13 @@ const Navbar = () => {
         }
     }, [data, isAuthenticated]);
 
-    const { mutate } = useMutation({
-        mutationKey: ['logout'],
-        mutationFn: logout,
-        onSuccess: () => {
-            localStorage.removeItem('userData');
-            setIsAuthenticated(false);
-            refetch()
-            router.push('/login');
-        },
-        onError: (error) => {
-            console.error('Logout failed:', error);
-        },
-    });
-
     const handleLogout = () => {
-        mutate();
+        localStorage.removeItem('userData');
+        deleteCookie('accessToken')
+        deleteCookie('refreshToken')
+        setIsAuthenticated(false);
+        refetch()
+        router.push('/login');
     };
 
     if (isLoading) {

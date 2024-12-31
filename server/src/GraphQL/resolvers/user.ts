@@ -71,6 +71,7 @@ export default {
                         refreshToken
                     },
                 });
+
                 return { userData: newUser, refreshToken: refreshToken, accessToken: accessToken };
             } catch (error) {
                 console.error('Error creating user:', error);
@@ -83,7 +84,7 @@ export default {
             { username, email, password }: LoginUserData
         ): Promise<{ userData: PrismaUser; accessToken: string; refreshToken: string }> => {
             try {
-                const userData = await prisma.user.findFirst({
+                var userData = await prisma.user.findFirst({
                     where: {
                         OR: [
                             { username },
@@ -96,12 +97,14 @@ export default {
                 if (!isPasswordValid) throw new Error('Invalid password');
                 const refreshToken = generateRefreshToken(userData.user_id)
                 const accessToken = generateAccessToken(userData.user_id)
-                await prisma.user.update({
+                userData = await prisma.user.update({
                     where: { user_id: userData.user_id },
                     data: {
                         refreshToken
                     },
                 });
+
+
                 return { userData, refreshToken, accessToken };
 
             } catch (error) {

@@ -1,12 +1,11 @@
 'use client'
-import Loader from '@/components/Loader';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from "react";
+import Loader from '../../components/Loader';
 import { userSignUp } from '../../UserRequest/userSignup';
 const page = () => {
     const router = useRouter()
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const [formData, setFormData] = useState({
         first_name: '',
@@ -24,7 +23,7 @@ const page = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const emailRegex = /^[a-zA-Z0-9.]+@[a-zA-Z0-9.]+\.[a-zA-Z]{2,}$/;
         if (!emailRegex.test(formData.email)) {
             alert('Invalid email address');
         }
@@ -93,7 +92,6 @@ const page = () => {
                                         name="email"
                                         className="border-b border-black focus:outline-none"
                                         onChange={(e) => changeFormData(e)}
-                                        pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                                     />
                                 </td>
                             </tr>

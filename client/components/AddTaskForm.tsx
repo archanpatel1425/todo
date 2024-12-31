@@ -1,6 +1,7 @@
+import { TODO_MUTATION } from '@/GraphQL/GetToDoGQL/getToDo';
+import axiosClient from '@/utils/axiosClient';
 import { XMarkIcon } from '@heroicons/react/24/solid'; // Import Heroicons close icon
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import { useState } from "react";
 
 interface FormData {
@@ -16,20 +17,17 @@ const AddTaskForm = ({ onFormSubmit, onClose }: { onFormSubmit: (data: FormData)
     const user_id = JSON.parse(localStorage.getItem('userData') as string).user_id
     const addTask = async (formData: FormData) => {
         try {
-            await axios.post('http://localhost:5000/todo/todo', { formData, user_id }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }, withCredentials: true,
-            })
-                .then((response) => {
-                    return response.data
-                })
-                .catch((error) => {
-                    console.error('Task adding error:', error);
-                });
+            const response = await axiosClient.post(`/graphql`,
+                {
+                    query: TODO_MUTATION,
+                    variables: { ...formData, userId: user_id },
+                }, { withCredentials: true }
+            )
+            const data = response.data.data.createTodo;
+            return data;
 
         } catch (error) {
-            console.error('Task is not added', error);
+            console.error(error)
         }
     }
 

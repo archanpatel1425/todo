@@ -20,9 +20,7 @@ export const GET_USER = `
                         last_name,
             }
 }
-
 `
-
 export const CREATE_USER = ` 
                 mutation createUser($first_name: String!, $last_name: String!, $username: String!, $email: String!, $password: String!) {
                   createUser(first_name: $first_name,last_name: $last_name,username: $username,email: $email,password: $password) {

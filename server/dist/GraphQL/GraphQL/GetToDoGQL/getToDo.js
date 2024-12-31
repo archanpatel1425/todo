@@ -1,4 +1,7 @@
-export const GET_TODO_QUERY = `
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.COMPLETE_TODO = exports.DELETE_TODO_MUTATION = exports.UPDATE_TODO = exports.TODO_MUTATION = exports.GET_TODO_BYID = exports.GET_TODO_QUERY = void 0;
+exports.GET_TODO_QUERY = `
   query GetTodos($userId: String!) {
     getTodos(userId: $userId) {
       task_id
@@ -10,8 +13,7 @@ export const GET_TODO_QUERY = `
     }
   }
 `;
-
-export const GET_TODO_BYID = `
+exports.GET_TODO_BYID = `
   query GetTodoById($task_id: String!) {
     getTodoById(task_id: $task_id ) {
       task_id
@@ -23,8 +25,7 @@ export const GET_TODO_BYID = `
     }
   }
 `;
-
-export const TODO_MUTATION = `
+exports.TODO_MUTATION = `
   mutation CreateTodo(
     $userId: String!, 
     $title: String!, 
@@ -48,8 +49,7 @@ export const TODO_MUTATION = `
     }
   }
 `;
-
-export const UPDATE_TODO = `
+exports.UPDATE_TODO = `
   mutation UpdateTask($task_id: String!, $data: UpdateTaskInput!) {
     updateTask(task_id: $task_id, data: $data) {
          task_id
@@ -64,16 +64,14 @@ export const UPDATE_TODO = `
 }
 
 `;
-
-export const DELETE_TODO_MUTATION = `
+exports.DELETE_TODO_MUTATION = `
   mutation DeleteTodo($task_id: String!) {
     deleteTodo(task_id: $task_id ) {
       task_id
     }
   }
 `;
-
-export const COMPLETE_TODO = `
+exports.COMPLETE_TODO = `
   mutation CompleteTodo($task_id: String!) {
     updateTask(where: { task_id: $task_id }, data: { status: COMPLETED }) {
       task_id

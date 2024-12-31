@@ -12,11 +12,8 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const graphql_1 = require("graphql");
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const index_1 = __importDefault(require("./GraphQL/resolvers/index"));
 const typeDefs_1 = __importDefault(require("./GraphQL/typeDefs"));
-const todoRoutes_1 = __importDefault(require("./routes/todoRoutes"));
-const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const app = (0, express_1.default)();
 const prisma = new client_1.PrismaClient();
 const corsOptions = {
@@ -28,28 +25,7 @@ app.use(express_1.default.json());
 app.use(body_parser_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.static("public"));
-app.use('/todo', todoRoutes_1.default);
-app.use('/auth', userRoutes_1.default);
 const main = async () => {
-    const validateSession = async (sessionToken) => {
-        if (!sessionToken) {
-            console.error('Session token not provided');
-            return null;
-        }
-        try {
-            const decoded = jsonwebtoken_1.default.verify(sessionToken, process.env.JWT_SECRET || '');
-            const user = await prisma.user.findUnique({ where: { user_id: decoded.userId } });
-            if (!user) {
-                console.error('No user found for the provided token');
-                return null;
-            }
-            return user;
-        }
-        catch (error) {
-            console.error('Invalid or expired token:', error.message);
-            return null;
-        }
-    };
     const apolloServer = new apollo_server_express_1.ApolloServer({
         typeDefs: typeDefs_1.default,
         resolvers: index_1.default,
@@ -74,7 +50,6 @@ const main = async () => {
         bodyParserConfig: { limit: "1tb" },
     });
     const PORT = process.env.PORT || 5000;
-    app.listen(PORT, () => {
-    });
+    app.listen(PORT, () => { console.log('server running on port 5000'); });
 };
 main().catch((err) => console.error(err));

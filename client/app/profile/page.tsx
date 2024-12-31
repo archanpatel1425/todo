@@ -1,10 +1,9 @@
 'use client'
+import { getUser } from "@/UserRequest/userValidation";
+import axiosClient from "@/utils/axiosClient";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useRouter } from 'next/navigation';
 import { useEffect } from "react";
-
-// Define the type of the user data
 interface UserData {
     user_id: string;
     first_name: string;
@@ -15,36 +14,16 @@ interface UserData {
 }
 
 const Page = () => {
-    const user_id = JSON.parse(localStorage.getItem('userData') as string).user_id;
     const router = useRouter()
-
     useEffect(() => {
         if (!localStorage.getItem('userData')) {
             router.push('/login')
         }
     }, []);
 
-    // Define the getUserData function
-    const getUserData = async (): Promise<UserData> => {
-        try {
-            const response = await axios.post('http://localhost:5000/auth/user-data', { user_id }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true
-            });
-
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            throw error; // Rethrow the error so it can be handled by useQuery
-        }
-    };
-
-    // Type the useQuery hook with UserData
     const { data, isLoading, error, refetch } = useQuery<UserData>({
         queryKey: ['getUserData'],
-        queryFn: getUserData,
+        queryFn: getUser,
     });
 
     useEffect(() => {
@@ -54,7 +33,7 @@ const Page = () => {
         return <div>Loading...</div>;
     }
 
-    if (error instanceof Error) {
+    if (error) {
         return <div>Error: {error.message}</div>;
     }
 

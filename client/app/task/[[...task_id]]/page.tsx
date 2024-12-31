@@ -2,8 +2,9 @@
 
 import EditForm from '@/components/EditForm';
 import Loader from '@/components/Loader';
+import { GET_TODO_BYID } from '@/GraphQL/GetToDoGQL/getToDo';
+import axiosClient from '@/utils/axiosClient';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -33,24 +34,24 @@ const Page = () => {
     const task_id = params.task_id as string;
     const [showForm, setShowForm] = useState(false);
     const [taskDetail, setTaskDetail] = useState<Task | null>(null);
-    const getTaskDetails = async () => {
-        const userId = JSON.parse(localStorage.getItem('userData') as string).user_id;
-        const response = await axios.post(
-            'http://localhost:5000/todo/task-details',
-            { task_id },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true,
-            }
-        );
-        return response.data;
-    };
 
+    const getTaskById = async () => {
+        try {
+            const response = await axiosClient.post(`/graphql`, {
+                query: GET_TODO_BYID,
+                variables: { task_id:task_id[0] },
+            }, {
+                withCredentials: true,
+            });
+            const data = response.data.data.getTodoById;
+            return data;
+        } catch (error) {
+            console.error(error)
+        }
+    }
     const { data, isLoading, error } = useQuery({
         queryKey: ['gettaskdetails', task_id],
-        queryFn: getTaskDetails,
+        queryFn: getTaskById,
     });
 
     useEffect(() => {

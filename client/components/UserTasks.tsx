@@ -1,7 +1,8 @@
 'use client';
 
+import { DELETE_TODO_MUTATION } from "@/GraphQL/GetToDoGQL/getToDo";
+import axiosClient from "@/utils/axiosClient";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { useRouter } from 'next/navigation';
 import { Key, useEffect, useState } from "react";
 
@@ -22,18 +23,20 @@ const UserTasks = ({ user_tasks }: { user_tasks: Task[] }) => {
     const router = useRouter();
 
     const deleteTask = async (task_id: string) => {
-        const response = await axios.post(
-            'http://localhost:5000/todo/delete-task',   
-            { task_id },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                withCredentials: true,
-            }
-        );
-        return response.data;
-    };
+        try {
+            const response = await axiosClient.post(`/graphql`, {
+                query: DELETE_TODO_MUTATION,
+                variables: { task_id },
+            }, {
+                withCredentials: true
+            });
+            const data = response.data.data.deleteTodo;
+            return data;    
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
 
     const { mutate } = useMutation({
         mutationFn: deleteTask,

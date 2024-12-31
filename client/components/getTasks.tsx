@@ -1,16 +1,19 @@
-import axios from "axios";
+import { GET_TODO_QUERY } from "@/GraphQL/GetToDoGQL/getToDo";
+import axiosClient from "@/utils/axiosClient";
 
 export const getTasks = async () => {
     const userId = JSON.parse(localStorage.getItem('userData') as string).user_id;
-    const response = await axios.post(
-        'http://localhost:5000/todo/todos',
-        { userId },
-        {
-            headers: {
-                'Content-Type': 'application/json',
-            },
+    try {
+        const response = await axiosClient.post(`/graphql`, {
+            query: GET_TODO_QUERY,
+            variables: { userId },
+        }, {
             withCredentials: true,
         }
-    );
-    return response.data;
-};
+        );
+        const data = response.data.data.getTodos;
+        return data;
+    } catch (error) {
+        console.error(error)
+    }
+}

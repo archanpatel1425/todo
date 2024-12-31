@@ -1,6 +1,7 @@
+import { UPDATE_TODO } from '@/GraphQL/GetToDoGQL/getToDo';
+import axiosClient from '@/utils/axiosClient';
 import { XMarkIcon } from '@heroicons/react/24/solid'; // Import Heroicons close icon
 import { useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import React, { useState } from 'react';
 enum Status {
     PENDING,
@@ -23,25 +24,26 @@ interface FormData {
     task_id: string;
 
 }
-const EditForm = ({ OldFormData, onFormSubmit, onClose }: { OldFormData: FormData , onFormSubmit: (data: FormData) => void; onClose: () => void }) => {
+const EditForm = ({ OldFormData, onFormSubmit, onClose }: { OldFormData: FormData, onFormSubmit: (data: FormData) => void; onClose: () => void }) => {
     const [formData, setFormData] = useState<FormData>(OldFormData);
     const updateTask = async (formData: FormData) => {
-        const userId = JSON.parse(localStorage.getItem('userData') as string).user_id;
         try {
-            await axios.post('http://localhost:5000/todo/update-task', formData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }, withCredentials: true,
+            const response = await axiosClient.post(`/graphql`, {
+                query: UPDATE_TODO,
+                variables: {
+                    task_id: formData.task_id,
+                    data: formData
+                }
+            }, {
+                withCredentials: true,
             })
-                .catch((error) => {
-                    console.error('Task adding error:', error);
-                });
+            const data = response.data.data;
 
+            return data;
         } catch (error) {
-            console.error('Task is not added', error);
+            console.error(error)
         }
-    }
-
+    };
     const { mutate, data } = useMutation({
         mutationFn: updateTask
     })

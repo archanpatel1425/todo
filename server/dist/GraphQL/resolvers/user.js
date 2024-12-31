@@ -62,7 +62,7 @@ exports.default = {
         },
         loginUser: async (_, { username, email, password }) => {
             try {
-                const userData = await prisma.user.findFirst({
+                var userData = await prisma.user.findFirst({
                     where: {
                         OR: [
                             { username },
@@ -77,7 +77,7 @@ exports.default = {
                     throw new Error('Invalid password');
                 const refreshToken = (0, tokenUtils_1.generateRefreshToken)(userData.user_id);
                 const accessToken = (0, tokenUtils_1.generateAccessToken)(userData.user_id);
-                await prisma.user.update({
+                userData = await prisma.user.update({
                     where: { user_id: userData.user_id },
                     data: {
                         refreshToken

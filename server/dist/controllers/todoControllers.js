@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.completeTodo = exports.deleteTodo = exports.updateTodo = exports.createTodo = exports.getTodoById = exports.getAllTodos = void 0;
+exports.deleteTodo = exports.updateTodo = exports.createTodo = exports.getTodoById = exports.getAllTodos = void 0;
 const todoServices_1 = require("../services/todoServices");
 // Custom error class to include status
 class HttpError extends Error {
@@ -67,22 +67,3 @@ const deleteTodo = async (req, res) => {
     }
 };
 exports.deleteTodo = deleteTodo;
-const completeTodo = async (req, res, next) => {
-    try {
-        const { task_id } = req.params;
-        const updatedTask = await (0, todoServices_1.completeTask)(task_id);
-        res.status(200).json(updatedTask);
-    }
-    catch (error) {
-        if (error instanceof HttpError) {
-            next({ status: error.status, message: error.message });
-        }
-        else if (error instanceof Error) {
-            next({ status: 500, message: error.message });
-        }
-        else {
-            next({ status: 500, message: 'Unknown error occurred' });
-        }
-    }
-};
-exports.completeTodo = completeTodo;

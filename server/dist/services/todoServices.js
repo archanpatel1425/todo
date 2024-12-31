@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.completeTask = exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskById = exports.getAllTasks = void 0;
+exports.deleteTask = exports.updateTask = exports.createTask = exports.getTaskById = exports.getAllTasks = void 0;
 const client_1 = require("@prisma/client");
 const getToDo_1 = require("../GraphQL/GetToDoGQL/getToDo");
 const prisma = new client_1.PrismaClient();
@@ -138,10 +138,3 @@ const deleteTask = async (task_id) => {
     }
 };
 exports.deleteTask = deleteTask;
-const completeTask = async (task_id) => {
-    const task = await prisma.task.findUnique({ where: { task_id } });
-    if (!task)
-        throw { status: 404, message: 'Task not found' };
-    return prisma.task.update({ where: { task_id }, data: { status: 'COMPLETED' } });
-};
-exports.completeTask = completeTask;

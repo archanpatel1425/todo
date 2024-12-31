@@ -4,9 +4,10 @@
   "main": "dist/server.mjs",
   "type": "commonjs",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "nodemon dist/server.js",
     "build": "tsc",
-    "dev": "tsc-watch --onSuccess \"node dist/server.js\""
+    "dev": "tsc-watch --onSuccess \"nodemon dist/server.js\"",
+    "watch": "tsc-watch"
   },
   "keywords": [],
   "author": "",

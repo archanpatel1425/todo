@@ -78,7 +78,7 @@ const resolvers = {
 
         updateTask: async (_: any, { task_id, data }: { task_id: string; data: UpdateTaskInput }, context: any) => {
             delete data.task_id;
-
+            data.dueDate = new Date(`${data.dueDate}T00:00:00.000Z`)
             try {
                 const updatedTask = await prisma.task.update({
                     where: { task_id },
