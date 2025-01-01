@@ -25,11 +25,11 @@ export async function loginUser(userData: user) {
             const data = response.data.data.loginUser
             setCookie('accessToken', data.accessToken, {
                 path: '/',
-                maxAge: 1 * 60 * 60 * 1000
+                maxAge: 1 * 60 * 60 
             });
             setCookie('refreshToken', data.refreshToken, {
                 path: '/',
-                maxAge: 7 * 24 * 60 * 60 * 1000
+                maxAge: 7 * 24 * 60 * 60    
             });
             localStorage.setItem('userData', JSON.stringify(data.userData))
             return response.data.data.loginUser

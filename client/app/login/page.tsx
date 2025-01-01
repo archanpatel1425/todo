@@ -1,28 +1,26 @@
 'use client';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import Loader from '@/components/Loader';
+import { useLoginUser } from '@/hooks/userHooks';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { loginUser } from '../../UserRequest/userLogin';
-import Loader from '@/components/Loader';
+
 const LoginForm = () => {
     const [emailOrUsername, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
     const queryClient = useQueryClient();
 
-    const { mutate, isPending } = useMutation({
-        mutationKey: ['loginUser'],
-        mutationFn: loginUser,
-    });
+    const { mutate: login, isPending } = useLoginUser()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        mutate(
+        login(
             { emailOrUsername, password },
             {
                 onSuccess: () => {
-                    queryClient.invalidateQueries({ queryKey: ['userData'] }); 
+                    queryClient.invalidateQueries({ queryKey: ['userData'] });
                     router.push('/');
                 },
                 onError: (error) => {

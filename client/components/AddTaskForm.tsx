@@ -1,7 +1,7 @@
 import { TODO_MUTATION } from '@/GraphQL/GetToDoGQL/getToDo';
+import { useAddTask } from '@/hooks/todoHooks';
 import axiosClient from '@/utils/axiosClient';
 import { XMarkIcon } from '@heroicons/react/24/solid'; // Import Heroicons close icon
-import { useMutation } from '@tanstack/react-query';
 import { useState } from "react";
 
 interface FormData {
@@ -11,34 +11,32 @@ interface FormData {
     priority: 'LOW' | 'MEDIUM' | 'HIGH';
 }
 
+export const addTask = async (formData: FormData) => {
+    const user_id = JSON.parse(localStorage.getItem('userData') as string).user_id
+    try {
+        const response = await axiosClient.post(`/graphql`,
+            {
+                query: TODO_MUTATION,
+                variables: { ...formData, userId: user_id },
+            }, { withCredentials: true }
+        )
+        const data = response.data.data.createTodo;
+        return data;
+
+    } catch (error) {
+        console.error(error)
+    }
+}
 const AddTaskForm = ({ onFormSubmit, onClose }: { onFormSubmit: (data: FormData) => void; onClose: () => void }) => {
 
     const [formData, setFormData] = useState<FormData>({ priority: 'LOW' });
-    const user_id = JSON.parse(localStorage.getItem('userData') as string).user_id
-    const addTask = async (formData: FormData) => {
-        try {
-            const response = await axiosClient.post(`/graphql`,
-                {
-                    query: TODO_MUTATION,
-                    variables: { ...formData, userId: user_id },
-                }, { withCredentials: true }
-            )
-            const data = response.data.data.createTodo;
-            return data;
 
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    const { mutate, data } = useMutation({
-        mutationFn: addTask
-    })
+    const { mutate: addTask, data } = useAddTask()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         try {
-            const res = mutate({ ...formData }, {
+            const res = addTask({ ...formData }, {
                 onSuccess: () => {
                     onFormSubmit(data as any);
                 }

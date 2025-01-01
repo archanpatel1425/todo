@@ -1,8 +1,8 @@
 'use client';
 
 import { DELETE_TODO_MUTATION } from "@/GraphQL/GetToDoGQL/getToDo";
+import { usedeleteTask } from "@/hooks/todoHooks";
 import axiosClient from "@/utils/axiosClient";
-import { useMutation } from "@tanstack/react-query";
 import { useRouter } from 'next/navigation';
 import { Key, useEffect, useState } from "react";
 
@@ -14,7 +14,20 @@ export interface Task {
     status: 'completed' | 'notcompleted';
     task_id: string;
 }
-
+export const deleteTask = async (task_id: string) => {
+    try {
+        const response = await axiosClient.post(`/graphql`, {
+            query: DELETE_TODO_MUTATION,
+            variables: { task_id },
+        }, {
+            withCredentials: true
+        });
+        const data = response.data.data.deleteTodo;
+        return data;
+    } catch (error) {
+        console.error(error)
+    }
+}
 const UserTasks = ({ user_tasks }: { user_tasks: Task[] }) => {
     const [tasks, setTasks] = useState<Task[]>(user_tasks || []);
     useEffect(() => {
@@ -22,25 +35,7 @@ const UserTasks = ({ user_tasks }: { user_tasks: Task[] }) => {
     }, [user_tasks])
     const router = useRouter();
 
-    const deleteTask = async (task_id: string) => {
-        try {
-            const response = await axiosClient.post(`/graphql`, {
-                query: DELETE_TODO_MUTATION,
-                variables: { task_id },
-            }, {
-                withCredentials: true
-            });
-            const data = response.data.data.deleteTodo;
-            return data;    
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-
-    const { mutate } = useMutation({
-        mutationFn: deleteTask,
-    });
+    const { mutate: deleteTask } = usedeleteTask()
 
     const handleClickViewMore = (task_id: string) => {
         router.push(`/task/${task_id}`);
@@ -48,7 +43,7 @@ const UserTasks = ({ user_tasks }: { user_tasks: Task[] }) => {
 
     const handleClickDeleteTask = (task_id: string) => {
         setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
-        mutate(task_id);
+        deleteTask(task_id);
     };
 
     return (

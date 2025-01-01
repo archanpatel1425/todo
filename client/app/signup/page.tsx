@@ -1,9 +1,9 @@
 'use client'
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCreateUser } from '@/hooks/userHooks';
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from "react";
 import Loader from '../../components/Loader';
-import { userSignUp } from '../../UserRequest/userSignup';
 const page = () => {
     const router = useRouter()
 
@@ -16,10 +16,7 @@ const page = () => {
     });
     const queryClient = useQueryClient();
 
-    const { mutate, data, isPending } = useMutation({
-        mutationKey: ['SignupUser'],
-        mutationFn: userSignUp
-    })
+    const { mutate:createUser, data, isPending } = useCreateUser()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -29,7 +26,7 @@ const page = () => {
         }
         else {
             try {
-                const res = mutate({ ...formData }, {
+                const res = createUser({ ...formData }, {
                     onSuccess: () => {
                         queryClient.invalidateQueries({ queryKey: ['userData'] }); // Corrected line
                         router.push('/');

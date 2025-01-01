@@ -1,7 +1,7 @@
 import { UPDATE_TODO } from '@/GraphQL/GetToDoGQL/getToDo';
+import { useUpdateTask } from '@/hooks/todoHooks';
 import axiosClient from '@/utils/axiosClient';
 import { XMarkIcon } from '@heroicons/react/24/solid'; // Import Heroicons close icon
-import { useMutation } from '@tanstack/react-query';
 import React, { useState } from 'react';
 enum Status {
     PENDING,
@@ -24,35 +24,33 @@ interface FormData {
     task_id: string;
 
 }
+export const updateTask = async (formData: FormData) => {
+    try {
+        const response = await axiosClient.post(`/graphql`, {
+            query: UPDATE_TODO,
+            variables: {
+                task_id: formData.task_id,
+                data: formData
+            }
+        }, {
+            withCredentials: true,
+        })
+        const data = response.data.data;
+
+        return data;
+    } catch (error) {
+        console.error(error)
+    }
+};
 const EditForm = ({ OldFormData, onFormSubmit, onClose }: { OldFormData: FormData, onFormSubmit: (data: FormData) => void; onClose: () => void }) => {
     const [formData, setFormData] = useState<FormData>(OldFormData);
-    const updateTask = async (formData: FormData) => {
-        try {
-            const response = await axiosClient.post(`/graphql`, {
-                query: UPDATE_TODO,
-                variables: {
-                    task_id: formData.task_id,
-                    data: formData
-                }
-            }, {
-                withCredentials: true,
-            })
-            const data = response.data.data;
-
-            return data;
-        } catch (error) {
-            console.error(error)
-        }
-    };
-    const { mutate, data } = useMutation({
-        mutationFn: updateTask
-    })
+    const { mutate: updateTask, data } = useUpdateTask()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         onFormSubmit(formData);
         try {
-            const res = mutate({ ...formData });
+            const res = updateTask({ ...formData });
         } catch (err) {
             console.error(err);
         }
