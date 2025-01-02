@@ -1,0 +1,28 @@
+
+mutation createUser(
+  $first_name: String!
+  $last_name: String!
+  $username: String!
+  $email: String!
+  $password: String!
+) {
+  createUser(
+    first_name: $first_name
+    last_name: $last_name
+    username: $username
+    email: $email
+    password: $password
+  ) {
+    ...data
+    refreshToken
+    accessToken
+  }
+}
+
+fragment data on LoginResponse {
+  user_id
+  first_name
+  last_name
+  username
+  email
+}

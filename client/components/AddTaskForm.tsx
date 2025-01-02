@@ -1,42 +1,19 @@
-import { TODO_MUTATION } from '@/GraphQL/GetToDoGQL/getToDo';
 import { useAddTask } from '@/hooks/todoHooks';
-import axiosClient from '@/utils/axiosClient';
-import { XMarkIcon } from '@heroicons/react/24/solid'; // Import Heroicons close icon
+import { FormData } from '@/types/todoType';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import { useState } from "react";
 
-interface FormData {
-    task_name?: string;
-    task_description?: string;
-    dueDate?: string;
-    priority: 'LOW' | 'MEDIUM' | 'HIGH';
-}
 
-export const addTask = async (formData: FormData) => {
-    const user_id = JSON.parse(localStorage.getItem('userData') as string).user_id
-    try {
-        const response = await axiosClient.post(`/graphql`,
-            {
-                query: TODO_MUTATION,
-                variables: { ...formData, userId: user_id },
-            }, { withCredentials: true }
-        )
-        const data = response.data.data.createTodo;
-        return data;
-
-    } catch (error) {
-        console.error(error)
-    }
-}
 const AddTaskForm = ({ onFormSubmit, onClose }: { onFormSubmit: (data: FormData) => void; onClose: () => void }) => {
 
     const [formData, setFormData] = useState<FormData>({ priority: 'LOW' });
 
-    const { mutate: addTask, data } = useAddTask()
+    const { mutate, data } = useAddTask()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         try {
-            const res = addTask({ ...formData }, {
+            const res = mutate({ ...formData }, {
                 onSuccess: () => {
                     onFormSubmit(data as any);
                 }
@@ -87,6 +64,7 @@ const AddTaskForm = ({ onFormSubmit, onClose }: { onFormSubmit: (data: FormData)
                                     />
                                 </td>
                             </tr>
+
                             <tr>
                                 <td className="p-3">
                                     <label htmlFor="task_description">Task Description :</label>
@@ -101,6 +79,7 @@ const AddTaskForm = ({ onFormSubmit, onClose }: { onFormSubmit: (data: FormData)
                                     />
                                 </td>
                             </tr>
+                            
                             <tr>
                                 <td className="p-3">
                                     <label htmlFor="dueDate">Due Date :</label>

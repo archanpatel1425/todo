@@ -1,6 +1,7 @@
+import { GetUserDocument, GetUserQueryVariables } from '@/GraphQL/generated/graphql';
 import axiosClient from '@/utils/axiosClient';
 import { getCookie, setCookie } from 'cookies-next';
-import { GET_USER } from "../GraphQL/GetUsetGQL/getUser";
+import { print } from "graphql";
 import { generateAccessToken, getAccessTokenPayload, getRefreshTokenPayload, verifyRefreshToken } from "../utils/tokenUtils";
 
 type ValidateTokenResult = {
@@ -14,11 +15,11 @@ async function getUser(){
         const response = await axiosClient.post(
             'http://localhost:5000/graphql',
             {
-                query: GET_USER,
-                variables: { user_id },
+                query: print(GetUserDocument),
+                variables: { user_id } as GetUserQueryVariables,
             }
         );
-        return response.data.data.GetUser;
+        return response.data.data.getUser;
     } catch (error) {
         console.error(error);
         return null;

@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import Loader from '../../components/Loader';
 const page = () => {
     const router = useRouter()
-
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -28,7 +27,7 @@ const page = () => {
             try {
                 const res = createUser({ ...formData }, {
                     onSuccess: () => {
-                        queryClient.invalidateQueries({ queryKey: ['userData'] }); // Corrected line
+                        queryClient.invalidateQueries({ queryKey: ['userData'] }); 
                         router.push('/');
                     }
                 });

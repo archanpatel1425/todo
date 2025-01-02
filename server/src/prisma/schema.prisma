@@ -26,7 +26,7 @@ model Task {
   userId           String
   title            String
   task_description String
-  dueDate          DateTime?
+  dueDate          DateTime
   status           Status    @default(PENDING)
   priority         Priority  @default(MEDIUM)
   user             User      @relation(fields: [userId], references: [user_id])

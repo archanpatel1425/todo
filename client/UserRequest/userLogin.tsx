@@ -1,6 +1,7 @@
-import { LOGIN_USER } from "@/GraphQL/GetUsetGQL/getUser";
+import { LoginUserDocument, LoginUserMutationVariables } from "@/GraphQL/generated/graphql";
 import axiosClient from "@/utils/axiosClient";
 import { setCookie } from 'cookies-next';
+import { print } from "graphql";
 
 interface user {
     emailOrUsername: string,
@@ -15,12 +16,12 @@ export interface LoginResponse {
 export async function loginUser(userData: user) {
     try {
         await axiosClient.post(`/graphql`, {
-            query: LOGIN_USER,
+            query: print(LoginUserDocument),
             variables: {
                 username: userData.emailOrUsername,
                 email: userData.emailOrUsername,
                 password: userData.password,
-            },
+            } as LoginUserMutationVariables,
         }).then(response => {
             const data = response.data.data.loginUser
             setCookie('accessToken', data.accessToken, {
@@ -31,7 +32,7 @@ export async function loginUser(userData: user) {
                 path: '/',
                 maxAge: 7 * 24 * 60 * 60    
             });
-            localStorage.setItem('userData', JSON.stringify(data.userData))
+            localStorage.setItem('userData', JSON.stringify(data))
             return response.data.data.loginUser
         }).catch(error => console.log(error))
 

@@ -1,0 +1,10 @@
+query GetTodoById($task_id: String!) {
+  getTodoById(task_id: $task_id) {
+    task_id
+    title
+    task_description
+    dueDate
+    status
+    priority
+  }
+}

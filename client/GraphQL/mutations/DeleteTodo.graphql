@@ -1,0 +1,5 @@
+mutation DeleteTodo($task_id: String!) {
+  deleteTodo(task_id: $task_id) {
+    task_id
+  }
+}

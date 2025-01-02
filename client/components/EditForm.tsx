@@ -1,56 +1,17 @@
-import { UPDATE_TODO } from '@/GraphQL/GetToDoGQL/getToDo';
 import { useUpdateTask } from '@/hooks/todoHooks';
-import axiosClient from '@/utils/axiosClient';
-import { XMarkIcon } from '@heroicons/react/24/solid'; // Import Heroicons close icon
+import { Task } from '@/types/todoType';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import React, { useState } from 'react';
-enum Status {
-    PENDING,
-    IN_PROGRESS,
-    COMPLETED
-}
 
-enum Priority {
-    LOW,
-    MEDIUM,
-    HIGH
-}
-
-interface FormData {
-    title: string;
-    task_description: string;
-    dueDate: Date;
-    status: Status;
-    priority: Priority;
-    task_id: string;
-
-}
-export const updateTask = async (formData: FormData) => {
-    try {
-        const response = await axiosClient.post(`/graphql`, {
-            query: UPDATE_TODO,
-            variables: {
-                task_id: formData.task_id,
-                data: formData
-            }
-        }, {
-            withCredentials: true,
-        })
-        const data = response.data.data;
-
-        return data;
-    } catch (error) {
-        console.error(error)
-    }
-};
-const EditForm = ({ OldFormData, onFormSubmit, onClose }: { OldFormData: FormData, onFormSubmit: (data: FormData) => void; onClose: () => void }) => {
-    const [formData, setFormData] = useState<FormData>(OldFormData);
-    const { mutate: updateTask, data } = useUpdateTask()
+const EditForm = ({ OldFormData, onFormSubmit, onClose }: { OldFormData: Task, onFormSubmit: (data: Task) => void; onClose: () => void }) => {
+    const [formData, setFormData] = useState<Task>(OldFormData);
+    const { mutate, data } = useUpdateTask()
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         onFormSubmit(formData);
         try {
-            const res = updateTask({ ...formData });
+            const res = mutate({ ...formData });
         } catch (err) {
             console.error(err);
         }

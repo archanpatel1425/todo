@@ -1,7 +1,5 @@
-import { addTask } from "@/components/AddTaskForm";
-import { updateTask } from "@/components/EditForm";
-import { deleteTask } from "@/components/UserTasks";
 import { useMutation } from "@tanstack/react-query";
+import { addTask, deleteTask, updateTask } from "../TodoRequest/TodoRequest";
 
 export const usedeleteTask = () => {
     return useMutation({

@@ -4,25 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import AddTaskForm from '../components/AddTaskForm';
-import { getTasks } from '../components/getTasks';
 import Loader from "../components/Loader";
 import UserTasks from "../components/UserTasks";
-
-interface FormData {
-  task_name?: string;
-  task_description?: string;
-  dueDate?: string;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH';
-}
-
-interface Task {
-  priority: 'LOW' | 'MEDIUM' | 'HIGH';
-  title: string;
-  task_description: string;
-  dueDate: string;
-  status: 'completed' | 'notcompleted';
-  task_id: string;
-}
+import { getTasks } from '../TodoRequest/TodoRequest';
 
 const Home = () => {
   const [showForm, setShowForm] = useState(false);
@@ -43,7 +27,7 @@ const Home = () => {
     }
   }, [data]);
 
-  const onSubmitForm = async (newdata: FormData) => {
+  const onSubmitForm = async () => {
     setShowForm(false);
     refetch()
   };

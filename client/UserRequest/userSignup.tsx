@@ -1,6 +1,7 @@
+import { CreateUserDocument, CreateUserMutationVariables } from '@/GraphQL/generated/graphql';
 import axiosClient from '@/utils/axiosClient';
 import { setCookie } from 'cookies-next';
-import { CREATE_USER } from "../GraphQL/GetUsetGQL/getUser";
+import { print } from "graphql";
 
 interface formData {
     first_name: string,
@@ -18,13 +19,14 @@ export interface LoginResponse {
 export async function userSignUp(userData: formData) {
     try {
         await axiosClient.post('/graphql', {
-            query: CREATE_USER, variables: {
+            query: print(CreateUserDocument),
+            variables: {
                 first_name: userData.first_name,
                 last_name: userData.last_name,
                 username: userData.username,
                 email: userData.email,
                 password: userData.password,
-            },
+            } as CreateUserMutationVariables,
         }, {
             withCredentials: true,
         })
@@ -38,7 +40,7 @@ export async function userSignUp(userData: formData) {
                     path: '/',
                     maxAge: 7 * 24 * 60 * 60
                 });
-                localStorage.setItem('userData', JSON.stringify(data.userData))
+                localStorage.setItem('userData', JSON.stringify(data))
                 return data
             })
             .catch((error) => {

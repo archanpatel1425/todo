@@ -1,0 +1,11 @@
+query GetTodos($userId: String!) {
+  getTodos(userId: $userId) {
+    task_id
+    userId
+    title
+    task_description
+    dueDate
+    status
+    priority
+  }
+}

@@ -1,15 +1,8 @@
+import { Task } from "@/types/todoType";
 import { useQuery } from "@tanstack/react-query";
 import { Key, useEffect, useState } from "react";
-import { getTasks } from '../components/getTasks';
+import { getTasks } from '../TodoRequest/TodoRequest';
 import Loader from "./Loader";
-
-export interface Task {
-    priority: 'LOW' | 'MEDIUM' | 'HIGH';
-    task_name: string;
-    task_description: string;
-    dueDate: string;
-    status: 'completed' | 'notcompleted';
-}
 
 const Tasks = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -48,7 +41,7 @@ const Tasks = () => {
                                     key={index}
                                     className="border border-grey-500 bg-blue-0 hover:bg-blue-100"
                                 >
-                                    <td className="p-4 border border-black">{task.task_name}</td>
+                                    <td className="p-4 border border-black">{task.title}</td>
                                     <td className="p-4 border border-black">{task.task_description}</td>
                                     <td
                                         className={`p-4 border border-black font-bold ${task.priority === 'LOW'

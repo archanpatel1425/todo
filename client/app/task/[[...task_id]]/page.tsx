@@ -2,32 +2,13 @@
 
 import EditForm from '@/components/EditForm';
 import Loader from '@/components/Loader';
-import { GET_TODO_BYID } from '@/GraphQL/GetToDoGQL/getToDo';
+import { GetTodoByIdDocument, GetTodoByIdQueryVariables } from '@/GraphQL/generated/graphql';
+import { Task } from '@/types/todoType';
 import axiosClient from '@/utils/axiosClient';
 import { useQuery } from '@tanstack/react-query';
+import {print} from 'graphql';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-enum Status {
-    PENDING,
-    IN_PROGRESS,
-    COMPLETED
-}
-
-enum Priority {
-    LOW,
-    MEDIUM,
-    HIGH
-}
-
-interface Task {
-    title: string;
-    task_description: string;
-    dueDate: Date;
-    status: Status;
-    priority: Priority;
-    task_id: string;
-}
 
 const Page = () => {
     const params = useParams();
@@ -38,8 +19,8 @@ const Page = () => {
     const getTaskById = async () => {
         try {
             const response = await axiosClient.post(`/graphql`, {
-                query: GET_TODO_BYID,
-                variables: { task_id:task_id[0] },
+                query: print(GetTodoByIdDocument),
+                variables: { task_id: task_id[0] } as GetTodoByIdQueryVariables,
             }, {
                 withCredentials: true,
             });
@@ -56,13 +37,13 @@ const Page = () => {
 
     useEffect(() => {
         if (data) {
-            setTaskDetail(data); // Set the fetched data
+            setTaskDetail(data);
         }
     }, [data]);
 
     const onSubmitForm = (formData: Task) => {
         setShowForm(false);
-        setTaskDetail(formData); // Update the task details with the form data
+        setTaskDetail(formData);
     };
 
     const closeForm = () => {

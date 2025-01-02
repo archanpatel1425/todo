@@ -1,0 +1,15 @@
+mutation loginUser($username: String!, $email: String!, $password: String!) {
+  loginUser(username: $username, email: $email, password: $password) {
+    ...data
+    accessToken
+    refreshToken
+  }
+}
+
+fragment data on LoginResponse {
+  user_id
+  first_name
+  last_name
+  username
+  email
+}

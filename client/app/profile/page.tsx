@@ -1,17 +1,11 @@
 'use client'
+import { UserData } from "@/types/userType";
 import { getUser } from "@/UserRequest/userValidation";
 import axiosClient from "@/utils/axiosClient";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from 'next/navigation';
 import { useEffect } from "react";
-interface UserData {
-    user_id: string;
-    first_name: string;
-    last_name: string;
-    username: string;
-    email: string;
-    password: string;
-}
+
 
 const Page = () => {
     const router = useRouter()
@@ -32,12 +26,7 @@ const Page = () => {
     if (isLoading) {
         return <div>Loading...</div>;
     }
-
-    if (error) {
-        return <div>Error: {error.message}</div>;
-    }
-
-    // Render the user data in the table
+    
     return (
         <div>
             {data && (
