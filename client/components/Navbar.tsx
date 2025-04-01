@@ -57,10 +57,6 @@ const Navbar = () => {
                             <Link href="/">Home</Link>
                         </li>
                         <li className="m-4">
-                            <Link href="/profile">Profile</Link>
-                        </li>
-
-                        <li className="m-4">
                             <button onClick={handleLogout}>Logout</button>
                         </li>
                     </>
